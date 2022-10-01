@@ -1,6 +1,8 @@
 var soap = require('soap');
 const crypto = require('crypto');
 const statusCodes = require('./statusCodes');
+const rules = require('./rules');
+const label = require('./models/label');
 // WSI2_CreationExpedition
 // WSI2_CreationEtiquette
 // WSI2_RechercheCP
@@ -21,7 +23,7 @@ let args = {
 };
 // calculate Mondial Relay security key
 const securityKey = (args) => {
-    const content = args.join('') + privateKey;
+    const content = args.filter(n => n).join('') + privateKey;
     return crypto.createHash('md5').update(content).digest('hex').toUpperCase();
 
 }
@@ -83,12 +85,13 @@ searchPointsRelais = (args) => {
 const createLabel = (args) => {
     return new Promise((resolve, reject) => {
         return soap.createClient(url, (err, client) => {
-            console.log(client)
             if (err) {
                 return reject(err);
             }
-            args.Security = securityKey(Object.values(args));
-            client.WSI2_CreationEtiquette(args, (err, result) => {
+            console.log(label)
+            label.Security = securityKey(Object.values(label));
+            console.log(label)
+            client.WSI2_CreationEtiquette(label, (err, result) => {
                 if (err) {
                     return reject(err);
                 }
