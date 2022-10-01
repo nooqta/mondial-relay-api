@@ -34,7 +34,7 @@ const validateStatusCode = (code) => {
 }
 
 // WSI2_RechercheCP
-getPostalCodes = (args) => {
+searchZipCodes = (args) => {
     return new Promise((resolve, reject) => {
         return soap.createClient(url, (err, client) => {
             if (err) {
@@ -54,7 +54,7 @@ getPostalCodes = (args) => {
         });
     });
 }
-getPostalCodes(args).then((result) => {
+searchZipCodes(args).then((result) => {
     console.log(result);
 }).catch((err) => {
     console.log(err);
