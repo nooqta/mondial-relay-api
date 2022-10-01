@@ -65,15 +65,20 @@ searchPointsRelais = (args) => {
             }
             args.Security = securityKey(Object.values(args));
             client.WSI4_PointRelais_Recherche(args, (err, result) => {
+                console.log(result);
                 if (err) {
                     return reject(err);
                 }
                 if (validateStatusCode(result.WSI4_PointRelais_RechercheResult.STAT)) {
-                    console.log(result.WSI4_PointRelais_RechercheResult);
-                    return resolve(result.WSI4_PointRelais_RechercheResult.Liste.PointRelais);
+                    return resolve(result.WSI4_PointRelais_RechercheResult.PointsRelais.PointRelais_Details);
                 } else {
                     return reject(statusCodes[result.WSI4_PointRelais_RechercheResult.STAT]);
                 }
+            });
+        });
+    });
+}
+
 searchPointsRelais(args).then((result) => {
     console.log(result);
 }).catch((err) => {
