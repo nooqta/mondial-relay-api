@@ -16,7 +16,8 @@ let args = {
     Enseigne: merchant,
     Pays: 'FR',
     Ville: 'PARIS',
-    NbResult: '15',
+    CP: '75001',
+    NombreResultats: '15',
 };
 // calculate Mondial Relay security key
 const securityKey = (args) => {
@@ -54,27 +55,27 @@ searchZipCodes = (args) => {
         });
     });
 }
-searchZipCodes(args).then((result) => {
+
+// WSI4_PointRelais_Recherche
+searchPointsRelais = (args) => {
+    return new Promise((resolve, reject) => {
+        return soap.createClient(url, (err, client) => {
+            if (err) {
+                return reject(err);
+            }
+            args.Security = securityKey(Object.values(args));
+            client.WSI4_PointRelais_Recherche(args, (err, result) => {
+                if (err) {
+                    return reject(err);
+                }
+                if (validateStatusCode(result.WSI4_PointRelais_RechercheResult.STAT)) {
+                    console.log(result.WSI4_PointRelais_RechercheResult);
+                    return resolve(result.WSI4_PointRelais_RechercheResult.Liste.PointRelais);
+                } else {
+                    return reject(statusCodes[result.WSI4_PointRelais_RechercheResult.STAT]);
+                }
+searchPointsRelais(args).then((result) => {
     console.log(result);
 }).catch((err) => {
     console.log(err);
 });
-// // then/catch
-// soap.createClientAsync(url).then((client) => {
-//     return client.WSI2_RechercheCP(args, function (err, result) {
-//         const code = result.WSI2_RechercheCPResult.STAT;
-//         console.log(result);
-//         if(validateStatusCode(code)) {
-//             const communes = result.WSI2_RechercheCPResult.Liste.Commune;
-//             console.log(communes);
-//         }
-//         return result;
-//     });
-// }).catch((err) => {
-//     console.log(err);
-// });
-
-// async/await
-// var client = await soap.createClientAsync(url);
-// var result = await client.WSI2_RechercheCP(args);
-// console.log(result[0]);
