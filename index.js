@@ -79,7 +79,30 @@ searchPointsRelais = (args) => {
     });
 }
 
-searchPointsRelais(args).then((result) => {
+// WSI2_CreationEtiquette
+const createLabel = (args) => {
+    return new Promise((resolve, reject) => {
+        return soap.createClient(url, (err, client) => {
+            console.log(client)
+            if (err) {
+                return reject(err);
+            }
+            args.Security = securityKey(Object.values(args));
+            client.WSI2_CreationEtiquette(args, (err, result) => {
+                if (err) {
+                    return reject(err);
+                }
+                if (validateStatusCode(result.WSI2_CreationEtiquetteResult.STAT)) {
+                    return resolve(result.WSI2_CreationEtiquetteResult);
+                } else {
+                    return reject(statusCodes[result.WSI2_CreationEtiquetteResult.STAT]);
+                }
+            });
+        });
+    });
+}
+
+createLabel(args).then((result) => {
     console.log(result);
 }).catch((err) => {
     console.log(err);
