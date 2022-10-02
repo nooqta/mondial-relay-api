@@ -1,27 +1,13 @@
 var soap = require('soap');
 const crypto = require('crypto');
-const statusCodes = require('./statusCodes');
-const rules = require('./rules');
-const label = require('./models/label');
-// WSI2_CreationExpedition
-// WSI2_CreationEtiquette
-// WSI2_RechercheCP
-// WSI4_PointRelais_Recherche
-// WSI2_TracingColisDetaille
-// WSI3_GetEtiquettes
-// WSI2_STAT_Label
 
+
+const statusCodes = require('./statusCodes');
 const merchant = process.env.ENSEIGNE || 'BDTEST13';
 const privateKey = process.env.PRIVATE_KEY || 'PrivateK';
 const publicUrl = 'http://www.mondialrelay.com/';
 const apiUrl = 'https://api.mondialrelay.com/Web_Services.asmx?WSDL';
-let args = {
-    Enseigne: merchant,
-    Pays: 'FR',
-    Ville: 'PARIS',
-    CP: '75001',
-    NombreResultats: '15',
-};
+
 // calculate Mondial Relay security key
 const securityKey = (args) => {
     const content = args.filter(n => n).join('') + privateKey;
@@ -37,7 +23,7 @@ const validateStatusCode = (code) => {
 }
 
 // WSI2_RechercheCP
-searchZipCodes = (args) => {
+const searchZipCodes = (args) => {
     return new Promise((resolve, reject) => {
         return soap.createClient(apiUrl, (err, client) => {
             if (err) {
@@ -59,7 +45,7 @@ searchZipCodes = (args) => {
 }
 
 // WSI4_PointRelais_Recherche
-searchPointsRelais = (args) => {
+const searchPointsRelais = (args) => {
     return new Promise((resolve, reject) => {
         return soap.createClient(apiUrl, (err, client) => {
             if (err) {
@@ -88,7 +74,7 @@ const createLabel = (args) => {
             if (err) {
                 return reject(err);
             }
-            
+
             args.Security = securityKey(Object.values(args));
             console.log(args)
             client.WSI2_CreationEtiquette(args, (err, result) => {
@@ -140,7 +126,7 @@ const getStatMessage = (args) => {
                 if (err) {
                     return reject(err);
                 }
-                    return resolve(result.WSI2_STAT_LabelResult);
+                return resolve(result.WSI2_STAT_LabelResult);
             });
         });
     });
@@ -169,3 +155,16 @@ const getTracking = (args) => {
     });
 }
 
+module.exports = {
+    publicUrl,
+    apiUrl,
+    statusCodes,
+    securityKey,
+    validateStatusCode,
+    searchZipCodes,
+    searchPointsRelais,
+    createLabel,
+    getLabels,
+    getStatMessage,
+    getTracking,
+};
