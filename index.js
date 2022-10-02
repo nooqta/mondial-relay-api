@@ -88,10 +88,10 @@ const createLabel = (args) => {
             if (err) {
                 return reject(err);
             }
-            console.log(label)
-            label.Security = securityKey(Object.values(label));
-            console.log(label)
-            client.WSI2_CreationEtiquette(label, (err, result) => {
+            
+            args.Security = securityKey(Object.values(args));
+            console.log(args)
+            client.WSI2_CreationEtiquette(args, (err, result) => {
                 if (err) {
                     return reject(err);
                 }
@@ -105,7 +105,36 @@ const createLabel = (args) => {
     });
 }
 
-createLabel(args).then((result) => {
+// WSI3_GetEtiquettes
+const getLabels = (args) => {
+    return new Promise((resolve, reject) => {
+        return soap.createClient(url, (err, client) => {
+            if (err) {
+                return reject(err);
+            }
+            args.Security = securityKey(Object.values(args));
+            client.WSI3_GetEtiquettes(args, (err, result) => {
+                if (err) {
+                    return reject(err);
+                }
+                console.log(result);
+                if (validateStatusCode(result.WSI3_GetEtiquettesResult.STAT)) {
+                    return resolve(result.WSI3_GetEtiquettesResult);
+                } else {
+                    return reject(statusCodes[result.WSI3_GetEtiquettesResult.STAT]);
+                }
+            });
+        });
+    });
+}
+
+
+const labels = {
+    Enseigne: merchant,
+    Expeditions: '31236944',
+    Langue: 'FR'
+}
+getLabels(labels).then((result) => {
     console.log(result);
 }).catch((err) => {
     console.log(err);
