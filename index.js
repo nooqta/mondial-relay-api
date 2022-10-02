@@ -128,6 +128,23 @@ const getLabels = (args) => {
     });
 }
 
+// WSI2_STAT_Label
+const getLabelStatus = (args) => {
+    return new Promise((resolve, reject) => {
+        return soap.createClient(url, (err, client) => {
+            if (err) {
+                return reject(err);
+            }
+            args.Security = securityKey(Object.values(args));
+            client.WSI2_STAT_Label(args, (err, result) => {
+                if (err) {
+                    return reject(err);
+                }
+                    return resolve(result.WSI2_STAT_LabelResult);
+            });
+        });
+    });
+}
 
 const labels = {
     Enseigne: merchant,
@@ -135,6 +152,17 @@ const labels = {
     Langue: 'FR'
 }
 getLabels(labels).then((result) => {
+    console.log(result);
+}).catch((err) => {
+    console.log(err);
+});
+
+const labelSatus = {
+    Enseigne: merchant,
+    STAT_ID: 1,
+    Langue: 'FR'
+}
+getLabelStatus(labelSatus).then((result) => {
     console.log(result);
 }).catch((err) => {
     console.log(err);
