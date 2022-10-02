@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const statusCodes = require('./statusCodes');
 const rules = require('./rules');
 const label = require('./models/label');
+const 
 // WSI2_CreationExpedition
 // WSI2_CreationEtiquette
 // WSI2_RechercheCP
@@ -129,7 +130,7 @@ const getLabels = (args) => {
 }
 
 // WSI2_STAT_Label
-const getLabelStatus = (args) => {
+const getStatMessage = (args) => {
     return new Promise((resolve, reject) => {
         return soap.createClient(url, (err, client) => {
             if (err) {
@@ -162,7 +163,7 @@ const labelSatus = {
     STAT_ID: 1,
     Langue: 'FR'
 }
-getLabelStatus(labelSatus).then((result) => {
+getStatMessage(labelSatus).then((result) => {
     console.log(result);
 }).catch((err) => {
     console.log(err);
