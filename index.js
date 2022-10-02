@@ -3,7 +3,6 @@ const crypto = require('crypto');
 const statusCodes = require('./statusCodes');
 const rules = require('./rules');
 const label = require('./models/label');
-const 
 // WSI2_CreationExpedition
 // WSI2_CreationEtiquette
 // WSI2_RechercheCP
@@ -14,7 +13,8 @@ const
 
 const merchant = process.env.ENSEIGNE || 'BDTEST13';
 const privateKey = process.env.PRIVATE_KEY || 'PrivateK';
-var url = 'https://api.mondialrelay.com/Web_Services.asmx?WSDL';
+const publicUrl = 'http://www.mondialrelay.com/';
+const apiUrl = 'https://api.mondialrelay.com/Web_Services.asmx?WSDL';
 let args = {
     Enseigne: merchant,
     Pays: 'FR',
@@ -31,7 +31,6 @@ const securityKey = (args) => {
 
 const validateStatusCode = (code) => {
     if (code !== '0') {
-        console.log(statusCodes[code]);
         return false;
     }
     return true;
@@ -40,7 +39,7 @@ const validateStatusCode = (code) => {
 // WSI2_RechercheCP
 searchZipCodes = (args) => {
     return new Promise((resolve, reject) => {
-        return soap.createClient(url, (err, client) => {
+        return soap.createClient(apiUrl, (err, client) => {
             if (err) {
                 return reject(err);
             }
@@ -62,7 +61,7 @@ searchZipCodes = (args) => {
 // WSI4_PointRelais_Recherche
 searchPointsRelais = (args) => {
     return new Promise((resolve, reject) => {
-        return soap.createClient(url, (err, client) => {
+        return soap.createClient(apiUrl, (err, client) => {
             if (err) {
                 return reject(err);
             }
@@ -85,7 +84,7 @@ searchPointsRelais = (args) => {
 // WSI2_CreationEtiquette
 const createLabel = (args) => {
     return new Promise((resolve, reject) => {
-        return soap.createClient(url, (err, client) => {
+        return soap.createClient(apiUrl, (err, client) => {
             if (err) {
                 return reject(err);
             }
@@ -109,7 +108,7 @@ const createLabel = (args) => {
 // WSI3_GetEtiquettes
 const getLabels = (args) => {
     return new Promise((resolve, reject) => {
-        return soap.createClient(url, (err, client) => {
+        return soap.createClient(apiUrl, (err, client) => {
             if (err) {
                 return reject(err);
             }
@@ -132,7 +131,7 @@ const getLabels = (args) => {
 // WSI2_STAT_Label
 const getStatMessage = (args) => {
     return new Promise((resolve, reject) => {
-        return soap.createClient(url, (err, client) => {
+        return soap.createClient(apiUrl, (err, client) => {
             if (err) {
                 return reject(err);
             }
@@ -147,24 +146,26 @@ const getStatMessage = (args) => {
     });
 }
 
-const labels = {
-    Enseigne: merchant,
-    Expeditions: '31236944',
-    Langue: 'FR'
+// WSI2_TracingColisDetaille
+const getTracking = (args) => {
+    return new Promise((resolve, reject) => {
+        return soap.createClient(apiUrl, (err, client) => {
+            if (err) {
+                return reject(err);
+            }
+            args.Security = securityKey(Object.values(args));
+            client.WSI2_TracingColisDetaille(args, (err, result) => {
+                if (err) {
+                    return reject(err);
+                }
+                console.log(result);
+                if (validateStatusCode(result.WSI2_TracingColisDetailleResult.STAT)) {
+                    return resolve(result.WSI2_TracingColisDetailleResult);
+                } else {
+                    return reject(statusCodes[result.WSI2_TracingColisDetailleResult.STAT]);
+                }
+            });
+        });
+    });
 }
-getLabels(labels).then((result) => {
-    console.log(result);
-}).catch((err) => {
-    console.log(err);
-});
 
-const labelSatus = {
-    Enseigne: merchant,
-    STAT_ID: 1,
-    Langue: 'FR'
-}
-getStatMessage(labelSatus).then((result) => {
-    console.log(result);
-}).catch((err) => {
-    console.log(err);
-});
