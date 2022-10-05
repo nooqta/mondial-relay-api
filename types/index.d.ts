@@ -1,0 +1,12 @@
+export const publicUrl: "http://www.mondialrelay.com/";
+export const apiUrl: "https://api.mondialrelay.com/Web_Services.asmx?WSDL";
+import statusCodes = require("./statusCodes");
+export function securityKey(args: any): string;
+export function validateStatusCode(code: any): boolean;
+export function searchZipCodes(args: any): Promise<any>;
+export function searchPointsRelais(args: any): Promise<any>;
+export function createLabel(args: any): Promise<any>;
+export function getLabels(args: any): Promise<any>;
+export function getStatMessage(args: any): Promise<any>;
+export function getTracking(args: any): Promise<any>;
+export { statusCodes };

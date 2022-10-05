@@ -53,7 +53,6 @@ const searchPointsRelais = (args) => {
             }
             args.Security = securityKey(Object.values(args));
             client.WSI4_PointRelais_Recherche(args, (err, result) => {
-                console.log(result);
                 if (err) {
                     return reject(err);
                 }
@@ -76,7 +75,6 @@ const createLabel = (args) => {
             }
 
             args.Security = securityKey(Object.values(args));
-            console.log(args)
             client.WSI2_CreationEtiquette(args, (err, result) => {
                 if (err) {
                     return reject(err);
@@ -103,7 +101,7 @@ const getLabels = (args) => {
                 if (err) {
                     return reject(err);
                 }
-                console.log(result);
+                
                 if (validateStatusCode(result.WSI3_GetEtiquettesResult.STAT)) {
                     return resolve(result.WSI3_GetEtiquettesResult);
                 } else {
@@ -144,7 +142,7 @@ const getTracking = (args) => {
                 if (err) {
                     return reject(err);
                 }
-                console.log(result);
+                
                 if (validateStatusCode(result.WSI2_TracingColisDetailleResult.STAT)) {
                     return resolve(result.WSI2_TracingColisDetailleResult);
                 } else {
