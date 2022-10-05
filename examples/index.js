@@ -38,7 +38,7 @@ mondialRelay.getLabels(labels).then((result) => {
 // 5. Get stat message
 const statMessage = require('./data/statMessage');
 mondialRelay.getStatMessage(statMessage).then((result) => {
-    console.log(result);
+    // console.log(result);
 }).catch((err) => {
     console.log(err);
 });
@@ -46,7 +46,7 @@ mondialRelay.getStatMessage(statMessage).then((result) => {
 // 6. Track a parcel
 const tracking = require('./data/tracking');
 mondialRelay.getTracking(tracking).then((result) => {
-    console.log(result);
+    console.log('6 Track a parcel', result);
 }).catch((err) => {
     console.log(err);
 });

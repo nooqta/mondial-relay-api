@@ -1,7 +1,7 @@
 module.exports = {
-    Enseigne: merchant,
+    Enseigne: 'BDTEST13',
     Pays: 'FR',
     Ville: 'PARIS',
     CP: '75001',
-    NombreResultats: '15',
+    NbResult: '15',
 }
